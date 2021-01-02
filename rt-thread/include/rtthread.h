@@ -470,10 +470,16 @@ void rt_components_board_init(void);
 void rt_kprintf(const char *fmt, ...);
 void rt_kputs(const char *str);
 #endif
+
+#ifndef RT_USING_COMPILER_LIBC_STDIO_FUNCTION
 rt_int32_t rt_vsprintf(char *dest, const char *format, va_list arg_ptr);
 rt_int32_t rt_vsnprintf(char *buf, rt_size_t size, const char *fmt, va_list args);
 rt_int32_t rt_sprintf(char *buf, const char *format, ...);
 rt_int32_t rt_snprintf(char *buf, rt_size_t size, const char *format, ...);
+rt_int32_t rt_sscanf(const char *buf, const char *fmt, ...);
+#else
+#include <rt_wrap/stdio.h>
+#endif
 
 #if defined(RT_USING_DEVICE) && defined(RT_USING_CONSOLE)
 rt_device_t rt_console_set_device(const char *name);
@@ -489,7 +495,13 @@ int *_rt_errno(void);
 #endif
 #endif
 
+#ifndef RT_USING_COMPILER_BUILTIN_FFS
 int __rt_ffs(int value);
+#else
+#define __rt_ffs(value) __builtin_ffs(value)
+#endif
+
+#ifndef RT_USING_COMPILER_LIBC_STRING_FUNCTION
 
 void *rt_memset(void *src, int c, rt_ubase_t n);
 void *rt_memcpy(void *dest, const void *src, rt_ubase_t n);
@@ -505,11 +517,13 @@ char* strdup(const char* str);
 #endif
 
 char *rt_strstr(const char *str1, const char *str2);
-rt_int32_t rt_sscanf(const char *buf, const char *fmt, ...);
 char *rt_strncpy(char *dest, const char *src, rt_ubase_t n);
 void *rt_memmove(void *dest, const void *src, rt_ubase_t n);
 rt_int32_t rt_memcmp(const void *cs, const void *ct, rt_ubase_t count);
 rt_uint32_t rt_strcasecmp(const char *a, const char *b);
+#else
+#include "rt_wrap/string.h"
+#endif /*RT_USING_COMPILER_LIBC_STRING_FUNCTION*/
 
 void rt_show_version(void);
 

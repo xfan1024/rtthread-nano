@@ -114,6 +114,8 @@ int *_rt_errno(void)
 }
 RTM_EXPORT(_rt_errno);
 
+#ifndef RT_USING_COMPILER_LIBC_STRING_FUNCTION
+
 /**
  * This function will set the content of memory to specified value
  *
@@ -529,6 +531,8 @@ char *strdup(const char *s) __attribute__((alias("rt_strdup")));
 #endif
 #endif
 
+#endif /* RT_USING_COMPILER_LIBC_STRING_FUNCTION */
+
 /**
  * This function will show the version of rt-thread rtos
  */
@@ -541,6 +545,8 @@ void rt_show_version(void)
     rt_kprintf(" 2006 - 2019 Copyright by rt-thread team\n");
 }
 RTM_EXPORT(rt_show_version);
+
+#ifndef RT_USING_COMPILER_LIBC_STDIO_FUNCTION
 
 /* private function */
 #define isdigit(c)  ((unsigned)((c) - '0') < 10)
@@ -1092,6 +1098,9 @@ rt_int32_t rt_sprintf(char *buf, const char *format, ...)
 }
 RTM_EXPORT(rt_sprintf);
 
+#endif // RT_USING_COMPILER_LIBC_STDIO_FUNCTION
+
+
 #ifdef RT_USING_CONSOLE
 
 #ifdef RT_USING_DEVICE
@@ -1277,7 +1286,7 @@ void rt_free_align(void *ptr)
 RTM_EXPORT(rt_free_align);
 #endif
 
-#ifndef RT_USING_CPU_FFS
+#if !defined(RT_USING_CPU_FFS) && !defined(RT_USING_COMPILER_BUILTIN_FFS)
 const rt_uint8_t __lowest_bit_bitmap[] =
 {
     /* 00 */ 0, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
